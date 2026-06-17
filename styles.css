@@ -89,7 +89,7 @@ h1 {
 
 .storage-error {
   margin: 12px 0 0;
-  color: var(--danger);
+  color: #b91c1c;
   font-size: 0.95rem;
 }
 
@@ -117,7 +117,8 @@ h1 {
 
 .task-entry button:focus-visible,
 .delete-task:focus-visible,
-.toggle-task:focus-visible {
+.toggle-task:focus-visible,
+.filter-button:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.28);
   outline-offset: 2px;
 }
@@ -157,6 +158,32 @@ h1 {
 #task-count {
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.task-filters {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.filter-button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.filter-button:hover,
+.filter-button[aria-pressed="true"] {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.filter-button[aria-pressed="true"] {
+  background: rgba(37, 99, 235, 0.08);
 }
 
 .task-list {
@@ -235,6 +262,14 @@ h1 {
 
   .task-entry button {
     min-height: 44px;
+  }
+
+  .task-filters {
+    flex-wrap: wrap;
+  }
+
+  .filter-button {
+    flex: 1 1 auto;
   }
 
   .task-item {

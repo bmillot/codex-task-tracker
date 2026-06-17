@@ -5,8 +5,10 @@ const input = document.querySelector("#task-input");
 const list = document.querySelector("#task-list");
 const emptyMessage = document.querySelector("#empty-message");
 const taskCount = document.querySelector("#task-count");
+const filterButtons = document.querySelectorAll(".filter-button");
 const storageError = document.querySelector("#storage-error");
 
+let currentFilter = "all";
 let tasks = loadTasks();
 
 form.addEventListener("submit", (event) => {
@@ -44,6 +46,18 @@ list.addEventListener("click", (event) => {
   }
 });
 
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const nextFilter = button.dataset.filter;
+    if (!isValidFilter(nextFilter)) {
+      return;
+    }
+
+    currentFilter = nextFilter;
+    renderTasks();
+  });
+});
+
 renderTasks();
 
 function loadTasks() {
@@ -52,6 +66,7 @@ function loadTasks() {
   try {
     savedTasks = localStorage.getItem(STORAGE_KEY);
   } catch {
+    storageError.classList.remove("hidden");
     return [];
   }
 
@@ -67,11 +82,12 @@ function loadTasks() {
     }
 
     const validTasks = parsedTasks.filter(isValidTask);
-    if (validTasks.length !== parsedTasks.length) {
-      saveTasksToStorage(validTasks);
+    const uniqueTasks = removeDuplicateTaskIds(validTasks);
+    if (uniqueTasks.length !== parsedTasks.length) {
+      saveTasksToStorage(uniqueTasks);
     }
 
-    return validTasks;
+    return uniqueTasks;
   } catch {
     clearSavedTasks();
     return [];
@@ -132,7 +148,9 @@ function deleteTask(taskId) {
 function renderTasks() {
   list.innerHTML = "";
 
-  tasks.forEach((task) => {
+  const visibleTasks = getVisibleTasks();
+
+  visibleTasks.forEach((task) => {
     const item = document.createElement("li");
     item.className = task.completed ? "task-item completed" : "task-item";
     item.dataset.taskId = task.id;
@@ -161,18 +179,70 @@ function renderTasks() {
     list.append(item);
   });
 
-  updateEmptyState();
-  updateTaskCount();
+  updateFilterButtons();
+  updateEmptyState(visibleTasks.length);
+  updateTaskCount(visibleTasks.length);
 }
 
-function updateEmptyState() {
-  emptyMessage.classList.toggle("hidden", tasks.length > 0);
+function getVisibleTasks() {
+  if (currentFilter === "active") {
+    return tasks.filter((task) => !task.completed);
+  }
+
+  if (currentFilter === "completed") {
+    return tasks.filter((task) => task.completed);
+  }
+
+  return tasks;
 }
 
-function updateTaskCount() {
-  const count = tasks.length;
+function isValidFilter(filter) {
+  return filter === "all" || filter === "active" || filter === "completed";
+}
+
+function updateFilterButtons() {
+  filterButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.filter === currentFilter));
+  });
+}
+
+function updateEmptyState(visibleTaskCount) {
+  emptyMessage.classList.toggle("hidden", visibleTaskCount > 0);
+
+  if (tasks.length === 0) {
+    emptyMessage.textContent = "Aucune tâche pour le moment.";
+    return;
+  }
+
+  if (currentFilter === "active") {
+    emptyMessage.textContent = "Aucune tâche active.";
+    return;
+  }
+
+  if (currentFilter === "completed") {
+    emptyMessage.textContent = "Aucune tâche terminée.";
+    return;
+  }
+
+  emptyMessage.textContent = "Aucune tâche pour ce filtre.";
+}
+
+function updateTaskCount(count) {
   const label = count > 1 ? "tâches" : "tâche";
-  taskCount.textContent = `${count} ${label}`;
+  const filterLabel = getTaskCountFilterLabel(count);
+  taskCount.textContent = `${count} ${label}${filterLabel}`;
+}
+
+function getTaskCountFilterLabel(count) {
+  if (currentFilter === "active") {
+    return count > 1 ? " actives" : " active";
+  }
+
+  if (currentFilter === "completed") {
+    return count > 1 ? " terminées" : " terminée";
+  }
+
+  return "";
 }
 
 function getToggleLabel(task) {
@@ -187,7 +257,22 @@ function isValidTask(task) {
   return (
     task &&
     typeof task.id === "string" &&
+    task.id.trim() !== "" &&
     typeof task.title === "string" &&
+    task.title.trim() !== "" &&
     typeof task.completed === "boolean"
   );
+}
+
+function removeDuplicateTaskIds(tasksToCheck) {
+  const seenIds = new Set();
+
+  return tasksToCheck.filter((task) => {
+    if (seenIds.has(task.id)) {
+      return false;
+    }
+
+    seenIds.add(task.id);
+    return true;
+  });
 }

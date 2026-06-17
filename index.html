@@ -38,6 +38,11 @@
           <h2 id="tasks-title">Mes tâches</h2>
           <span id="task-count" aria-live="polite">0 tâche</span>
         </div>
+        <div class="task-filters" role="group" aria-label="Filtrer les tâches">
+          <button type="button" class="filter-button" data-filter="all" aria-pressed="true">Toutes</button>
+          <button type="button" class="filter-button" data-filter="active" aria-pressed="false">Actives</button>
+          <button type="button" class="filter-button" data-filter="completed" aria-pressed="false">Terminées</button>
+        </div>
         <ul class="task-list" id="task-list" aria-describedby="task-count"></ul>
         <p class="empty-message" id="empty-message">Aucune tâche pour le moment.</p>
       </section>
