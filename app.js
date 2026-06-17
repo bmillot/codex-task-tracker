@@ -46,21 +46,32 @@ list.addEventListener("click", (event) => {
 renderTasks();
 
 function loadTasks() {
-  const savedTasks = localStorage.getItem(STORAGE_KEY);
+  let savedTasks;
+
+  try {
+    savedTasks = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return [];
+  }
 
   if (!savedTasks) {
     return [];
   }
 
   try {
-    return JSON.parse(savedTasks);
+    const parsedTasks = JSON.parse(savedTasks);
+    return Array.isArray(parsedTasks) ? parsedTasks.filter(isValidTask) : [];
   } catch {
     return [];
   }
 }
 
 function saveTasks() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch {
+    // L'application reste utilisable même si la sauvegarde locale échoue.
+  }
 }
 
 function saveAndRender() {
@@ -140,8 +151,17 @@ function updateTaskCount() {
 
 function getToggleLabel(task) {
   if (task.completed) {
-    return `Marquer la tâche "${task.title}" comme à faire`;
+    return `Marquer la tâche "${task.title}" comme non terminée`;
   }
 
   return `Marquer la tâche "${task.title}" comme terminée`;
+}
+
+function isValidTask(task) {
+  return (
+    task &&
+    typeof task.id === "string" &&
+    typeof task.title === "string" &&
+    typeof task.completed === "boolean"
+  );
 }
