@@ -60,6 +60,7 @@ filterButtons.forEach((button) => {
 
 renderTasks();
 
+// Loads saved tasks from local storage and returns only valid unique tasks.
 function loadTasks() {
   let savedTasks;
 
@@ -94,11 +95,13 @@ function loadTasks() {
   }
 }
 
+// Saves the current in-memory tasks and updates the storage error state.
 function saveTasks() {
   const saved = saveTasksToStorage(tasks);
   storageError.classList.toggle("hidden", saved);
 }
 
+// Saves the task list to local storage and reports whether it succeeded.
 function saveTasksToStorage(tasksToSave) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksToSave));
@@ -108,6 +111,7 @@ function saveTasksToStorage(tasksToSave) {
   }
 }
 
+// Removes the saved task list from local storage.
 function clearSavedTasks() {
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -116,15 +120,18 @@ function clearSavedTasks() {
   }
 }
 
+// Saves the current tasks and refreshes the displayed list.
 function saveAndRender() {
   saveTasks();
   renderTasks();
 }
 
+// Creates a unique identifier for a new task.
 function createTaskId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+// Toggles the completion state of the matching task.
 function toggleTask(taskId) {
   tasks = tasks.map((task) => {
     if (task.id !== taskId) {
@@ -140,11 +147,13 @@ function toggleTask(taskId) {
   saveAndRender();
 }
 
+// Deletes the task matching the given identifier.
 function deleteTask(taskId) {
   tasks = tasks.filter((task) => task.id !== taskId);
   saveAndRender();
 }
 
+// Renders the currently visible tasks in the task list.
 function renderTasks() {
   list.innerHTML = "";
 
@@ -184,6 +193,7 @@ function renderTasks() {
   updateTaskCount(visibleTasks.length);
 }
 
+// Returns the tasks that match the active filter.
 function getVisibleTasks() {
   if (currentFilter === "active") {
     return tasks.filter((task) => !task.completed);
@@ -196,16 +206,19 @@ function getVisibleTasks() {
   return tasks;
 }
 
+// Checks whether a filter value is supported.
 function isValidFilter(filter) {
   return filter === "all" || filter === "active" || filter === "completed";
 }
 
+// Updates filter button states to match the active filter.
 function updateFilterButtons() {
   filterButtons.forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.filter === currentFilter));
   });
 }
 
+// Updates the empty-state message for the current task view.
 function updateEmptyState(visibleTaskCount) {
   emptyMessage.classList.toggle("hidden", visibleTaskCount > 0);
 
@@ -227,12 +240,14 @@ function updateEmptyState(visibleTaskCount) {
   emptyMessage.textContent = "Aucune tâche pour ce filtre.";
 }
 
+// Updates the task counter text for the current view.
 function updateTaskCount(count) {
   const label = count > 1 ? "tâches" : "tâche";
   const filterLabel = getTaskCountFilterLabel(count);
   taskCount.textContent = `${count} ${label}${filterLabel}`;
 }
 
+// Returns the filter-specific suffix for the task counter.
 function getTaskCountFilterLabel(count) {
   if (currentFilter === "active") {
     return count > 1 ? " actives" : " active";
@@ -245,6 +260,7 @@ function getTaskCountFilterLabel(count) {
   return "";
 }
 
+// Builds the accessible label for a task toggle control.
 function getToggleLabel(task) {
   if (task.completed) {
     return `Marquer la tâche "${task.title}" comme non terminée`;
@@ -253,6 +269,7 @@ function getToggleLabel(task) {
   return `Marquer la tâche "${task.title}" comme terminée`;
 }
 
+// Checks whether a task has the expected data shape.
 function isValidTask(task) {
   return (
     task &&
@@ -264,6 +281,7 @@ function isValidTask(task) {
   );
 }
 
+// Removes tasks with duplicate identifiers from a task list.
 function removeDuplicateTaskIds(tasksToCheck) {
   const seenIds = new Set();
 
