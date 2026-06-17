@@ -87,6 +87,16 @@ h1 {
   font-size: 0.95rem;
 }
 
+.storage-error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 0.95rem;
+}
+
+.storage-error.hidden {
+  display: none;
+}
+
 .task-entry {
   display: flex;
   gap: 10px;

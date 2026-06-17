@@ -5,6 +5,7 @@ const input = document.querySelector("#task-input");
 const list = document.querySelector("#task-list");
 const emptyMessage = document.querySelector("#empty-message");
 const taskCount = document.querySelector("#task-count");
+const storageError = document.querySelector("#storage-error");
 
 let tasks = loadTasks();
 
@@ -60,17 +61,42 @@ function loadTasks() {
 
   try {
     const parsedTasks = JSON.parse(savedTasks);
-    return Array.isArray(parsedTasks) ? parsedTasks.filter(isValidTask) : [];
+    if (!Array.isArray(parsedTasks)) {
+      clearSavedTasks();
+      return [];
+    }
+
+    const validTasks = parsedTasks.filter(isValidTask);
+    if (validTasks.length !== parsedTasks.length) {
+      saveTasksToStorage(validTasks);
+    }
+
+    return validTasks;
   } catch {
+    clearSavedTasks();
     return [];
   }
 }
 
 function saveTasks() {
+  const saved = saveTasksToStorage(tasks);
+  storageError.classList.toggle("hidden", saved);
+}
+
+function saveTasksToStorage(tasksToSave) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksToSave));
+    return true;
   } catch {
-    // L'application reste utilisable même si la sauvegarde locale échoue.
+    return false;
+  }
+}
+
+function clearSavedTasks() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // L'application reste utilisable même si le stockage local est indisponible.
   }
 }
 
