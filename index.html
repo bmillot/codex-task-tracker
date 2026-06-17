@@ -15,6 +15,7 @@
 
       <form class="task-form" id="task-form">
         <label for="task-input">Nouvelle tâche</label>
+        <p class="form-help" id="task-help">Saisissez une tâche puis appuyez sur Entrée ou sur Ajouter.</p>
         <div class="task-entry">
           <input
             id="task-input"
@@ -22,18 +23,19 @@
             type="text"
             placeholder="Ex. Préparer le cours"
             autocomplete="off"
+            aria-describedby="task-help"
             required
           >
-          <button type="submit">Ajouter</button>
+          <button type="submit" aria-label="Ajouter la tâche saisie">Ajouter</button>
         </div>
       </form>
 
       <section class="task-panel" aria-labelledby="tasks-title">
         <div class="panel-header">
           <h2 id="tasks-title">Mes tâches</h2>
-          <span id="task-count">0 tâche</span>
+          <span id="task-count" aria-live="polite">0 tâche</span>
         </div>
-        <ul class="task-list" id="task-list"></ul>
+        <ul class="task-list" id="task-list" aria-describedby="task-count"></ul>
         <p class="empty-message" id="empty-message">Aucune tâche pour le moment.</p>
       </section>
     </main>

@@ -100,21 +100,25 @@ function renderTasks() {
     item.className = task.completed ? "task-item completed" : "task-item";
     item.dataset.taskId = task.id;
 
+    const checkboxId = `task-toggle-${task.id}`;
+
     const checkbox = document.createElement("input");
     checkbox.className = "toggle-task";
+    checkbox.id = checkboxId;
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
-    checkbox.setAttribute("aria-label", `Marquer "${task.title}" comme terminée`);
+    checkbox.setAttribute("aria-label", getToggleLabel(task));
 
-    const title = document.createElement("span");
+    const title = document.createElement("label");
     title.className = "task-title";
+    title.htmlFor = checkboxId;
     title.textContent = task.title;
 
     const deleteButton = document.createElement("button");
     deleteButton.className = "delete-task";
     deleteButton.type = "button";
     deleteButton.textContent = "Supprimer";
-    deleteButton.setAttribute("aria-label", `Supprimer "${task.title}"`);
+    deleteButton.setAttribute("aria-label", `Supprimer la tâche "${task.title}"`);
 
     item.append(checkbox, title, deleteButton);
     list.append(item);
@@ -132,4 +136,12 @@ function updateTaskCount() {
   const count = tasks.length;
   const label = count > 1 ? "tâches" : "tâche";
   taskCount.textContent = `${count} ${label}`;
+}
+
+function getToggleLabel(task) {
+  if (task.completed) {
+    return `Marquer la tâche "${task.title}" comme à faire`;
+  }
+
+  return `Marquer la tâche "${task.title}" comme terminée`;
 }
