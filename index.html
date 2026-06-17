@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <p class="eyebrow">Suivi simple</p>
+        <h1>Task Tracker</h1>
+      </header>
+
+      <form class="task-form" id="task-form">
+        <label for="task-input">Nouvelle tâche</label>
+        <div class="task-entry">
+          <input
+            id="task-input"
+            name="task"
+            type="text"
+            placeholder="Ex. Préparer le cours"
+            autocomplete="off"
+            required
+          >
+          <button type="submit">Ajouter</button>
+        </div>
+      </form>
+
+      <section class="task-panel" aria-labelledby="tasks-title">
+        <div class="panel-header">
+          <h2 id="tasks-title">Mes tâches</h2>
+          <span id="task-count">0 tâche</span>
+        </div>
+        <ul class="task-list" id="task-list"></ul>
+        <p class="empty-message" id="empty-message">Aucune tâche pour le moment.</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
