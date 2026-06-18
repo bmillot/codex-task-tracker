@@ -63,7 +63,8 @@ h1 {
 }
 
 .task-form,
-.task-panel {
+.task-panel,
+.task-actions {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -117,6 +118,7 @@ h1 {
 
 .task-entry button:focus-visible,
 .delete-task:focus-visible,
+.delete-all-button:focus-visible,
 .toggle-task:focus-visible,
 .filter-button:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.28);
@@ -184,6 +186,31 @@ h1 {
 
 .filter-button[aria-pressed="true"] {
   background: rgba(37, 99, 235, 0.08);
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+  padding: 20px;
+}
+
+.delete-all-button {
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.delete-all-button:hover:not(:disabled) {
+  background: #fecaca;
+}
+
+.delete-all-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .task-list {

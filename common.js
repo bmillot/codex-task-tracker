@@ -91,6 +91,21 @@ function deleteTask(taskId) {
   saveAndRender();
 }
 
+// Deletes all tasks after user confirmation.
+function deleteAllTasks() {
+  if (tasks.length === 0) {
+    return;
+  }
+
+  const confirmed = confirm("Supprimer toutes les tâches ?");
+  if (!confirmed) {
+    return;
+  }
+
+  tasks = [];
+  saveAndRender();
+}
+
 // Renders the currently visible tasks in the task list.
 function renderTasks() {
   list.innerHTML = "";
@@ -129,6 +144,7 @@ function renderTasks() {
   updateFilterButtons();
   updateEmptyState(visibleTasks.length);
   updateTaskCount(visibleTasks.length);
+  updateDeleteAllButton();
 }
 
 // Returns the tasks that match the active filter.
@@ -183,6 +199,11 @@ function updateTaskCount(count) {
   const label = count > 1 ? "tâches" : "tâche";
   const filterLabel = getTaskCountFilterLabel(count);
   taskCount.textContent = `${count} ${label}${filterLabel}`;
+}
+
+// Disables the bulk delete button when there are no tasks.
+function updateDeleteAllButton() {
+  deleteAllButton.disabled = tasks.length === 0;
 }
 
 // Returns the filter-specific suffix for the task counter.
