@@ -119,6 +119,8 @@ h1 {
 .task-entry button:focus-visible,
 .delete-task:focus-visible,
 .delete-all-button:focus-visible,
+.secondary-button:focus-visible,
+.danger-button:focus-visible,
 .toggle-task:focus-visible,
 .filter-button:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.28);
@@ -213,6 +215,70 @@ h1 {
   opacity: 0.55;
 }
 
+.delete-all-dialog {
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 24px 60px rgba(31, 41, 55, 0.24);
+  overflow: auto;
+}
+
+.delete-all-dialog::backdrop {
+  background: rgba(31, 41, 55, 0.45);
+}
+
+.dialog-content {
+  padding: 22px;
+}
+
+.dialog-content h2 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+.dialog-content p {
+  margin-bottom: 20px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.secondary-button,
+.danger-button {
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-weight: 700;
+}
+
+.secondary-button {
+  background: #eef2f7;
+  color: var(--text);
+}
+
+.secondary-button:hover {
+  background: #e5eaf2;
+}
+
+.danger-button {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.danger-button:hover {
+  background: #b91c1c;
+}
+
 .task-list {
   list-style: none;
   margin: 0;
@@ -301,5 +367,15 @@ h1 {
 
   .task-item {
     align-items: flex-start;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .secondary-button,
+  .danger-button {
+    width: 100%;
+    min-height: 44px;
   }
 }

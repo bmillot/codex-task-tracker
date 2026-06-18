@@ -8,6 +8,9 @@ const taskCount = document.querySelector("#task-count");
 const filterButtons = document.querySelectorAll(".filter-button");
 const storageError = document.querySelector("#storage-error");
 const deleteAllButton = document.querySelector("#delete-all-button");
+const deleteAllDialog = document.querySelector("#delete-all-dialog");
+const cancelDeleteAllButton = document.querySelector("#cancel-delete-all");
+const confirmDeleteAllButton = document.querySelector("#confirm-delete-all");
 
 let currentFilter = "all";
 let tasks = loadTasks();
@@ -59,6 +62,8 @@ filterButtons.forEach((button) => {
   });
 });
 
-deleteAllButton.addEventListener("click", deleteAllTasks);
+deleteAllButton.addEventListener("click", openDeleteAllDialog);
+cancelDeleteAllButton.addEventListener("click", closeDeleteAllDialog);
+confirmDeleteAllButton.addEventListener("click", confirmDeleteAllTasks);
 
 renderTasks();

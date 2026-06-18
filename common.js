@@ -91,18 +91,24 @@ function deleteTask(taskId) {
   saveAndRender();
 }
 
-// Deletes all tasks after user confirmation.
-function deleteAllTasks() {
+// Opens the confirmation dialog before deleting all tasks.
+function openDeleteAllDialog() {
   if (tasks.length === 0) {
     return;
   }
 
-  const confirmed = confirm("Supprimer toutes les tâches ?");
-  if (!confirmed) {
-    return;
-  }
+  deleteAllDialog.showModal();
+}
 
+// Closes the bulk delete confirmation dialog.
+function closeDeleteAllDialog() {
+  deleteAllDialog.close();
+}
+
+// Deletes all tasks after user confirmation.
+function confirmDeleteAllTasks() {
   tasks = [];
+  closeDeleteAllDialog();
   saveAndRender();
 }
 

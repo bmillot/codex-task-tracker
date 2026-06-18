@@ -52,6 +52,17 @@
       </div>
     </main>
 
+    <dialog class="delete-all-dialog" id="delete-all-dialog" aria-labelledby="delete-all-dialog-title">
+      <div class="dialog-content">
+        <h2 id="delete-all-dialog-title">Supprimer toutes les tâches ?</h2>
+        <p>Cette action supprimera définitivement toutes les tâches de la liste.</p>
+        <div class="dialog-actions">
+          <button type="button" class="secondary-button" id="cancel-delete-all">Annuler</button>
+          <button type="button" class="danger-button" id="confirm-delete-all">Tout supprimer</button>
+        </div>
+      </div>
+    </dialog>
+
     <script src="common.js"></script>
     <script src="app.js"></script>
   </body>
