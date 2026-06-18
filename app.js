@@ -7,6 +7,7 @@ const emptyMessage = document.querySelector("#empty-message");
 const taskCount = document.querySelector("#task-count");
 const filterButtons = document.querySelectorAll(".filter-button");
 const storageError = document.querySelector("#storage-error");
+const deleteAllButton = document.querySelector("#delete-all-button");
 
 let currentFilter = "all";
 let tasks = loadTasks();
@@ -57,5 +58,7 @@ filterButtons.forEach((button) => {
     renderTasks();
   });
 });
+
+deleteAllButton.addEventListener("click", deleteAllTasks);
 
 renderTasks();
