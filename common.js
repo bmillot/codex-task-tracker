@@ -22,11 +22,15 @@ function loadTasks() {
 
     const validTasks = parsedTasks.filter(isValidTask);
     const uniqueTasks = removeDuplicateTaskIds(validTasks);
-    if (uniqueTasks.length !== parsedTasks.length) {
-      saveTasksToStorage(uniqueTasks);
+    const normalizedTasks = uniqueTasks.map(normalizeTaskDates);
+    if (
+      normalizedTasks.length !== parsedTasks.length ||
+      JSON.stringify(normalizedTasks) !== JSON.stringify(uniqueTasks)
+    ) {
+      saveTasksToStorage(normalizedTasks);
     }
 
-    return uniqueTasks;
+    return normalizedTasks;
   } catch {
     clearSavedTasks();
     return [];
@@ -69,6 +73,11 @@ function createTaskId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+// Creates a timestamp that can be safely saved in local storage.
+function createTaskTimestamp() {
+  return new Date().toISOString();
+}
+
 // Toggles the completion state of the matching task.
 function toggleTask(taskId) {
   tasks = tasks.map((task) => {
@@ -76,9 +85,12 @@ function toggleTask(taskId) {
       return task;
     }
 
+    const completed = !task.completed;
+
     return {
       ...task,
-      completed: !task.completed,
+      completed,
+      completedAt: completed ? createTaskTimestamp() : null,
     };
   });
 
@@ -132,10 +144,26 @@ function renderTasks() {
     checkbox.checked = task.completed;
     checkbox.setAttribute("aria-label", getToggleLabel(task));
 
+    const taskMain = document.createElement("div");
+    taskMain.className = "task-main";
+
     const title = document.createElement("label");
     title.className = "task-title";
     title.htmlFor = checkboxId;
     title.textContent = task.title;
+
+    const dates = document.createElement("span");
+    dates.className = "task-dates";
+
+    const createdDate = document.createElement("span");
+    createdDate.textContent = `créée le ${formatTaskDate(task.createdAt)}`;
+    dates.append(createdDate);
+
+    if (task.completedAt) {
+      const completedDate = document.createElement("span");
+      completedDate.textContent = `terminée le ${formatTaskDate(task.completedAt)}`;
+      dates.append(completedDate);
+    }
 
     const deleteButton = document.createElement("button");
     deleteButton.className = "delete-task";
@@ -143,7 +171,8 @@ function renderTasks() {
     deleteButton.textContent = "Supprimer";
     deleteButton.setAttribute("aria-label", `Supprimer la tâche "${task.title}"`);
 
-    item.append(checkbox, title, deleteButton);
+    taskMain.append(title, dates);
+    item.append(checkbox, taskMain, deleteButton);
     list.append(item);
   });
 
@@ -234,6 +263,11 @@ function getToggleLabel(task) {
   return `Marquer la tâche "${task.title}" comme terminée`;
 }
 
+// Formats a saved timestamp for French task metadata.
+function formatTaskDate(timestamp) {
+  return new Intl.DateTimeFormat("fr-FR").format(new Date(timestamp));
+}
+
 // Checks whether a task has the expected data shape.
 function isValidTask(task) {
   return (
@@ -242,8 +276,30 @@ function isValidTask(task) {
     task.id.trim() !== "" &&
     typeof task.title === "string" &&
     task.title.trim() !== "" &&
-    typeof task.completed === "boolean"
+    typeof task.completed === "boolean" &&
+    (task.createdAt === undefined || isValidOptionalDate(task.createdAt)) &&
+    (
+      task.completedAt === undefined ||
+      task.completedAt === null ||
+      isValidOptionalDate(task.completedAt)
+    )
   );
+}
+
+// Adds missing date fields to tasks saved before date management existed.
+function normalizeTaskDates(task) {
+  const createdAt = task.createdAt || createTaskTimestamp();
+
+  return {
+    ...task,
+    createdAt,
+    completedAt: task.completed ? task.completedAt || createdAt : null,
+  };
+}
+
+// Checks whether an optional saved date can be rendered.
+function isValidOptionalDate(date) {
+  return typeof date === "string" && date.trim() !== "" && !Number.isNaN(Date.parse(date));
 }
 
 // Removes tasks with duplicate identifiers from a task list.

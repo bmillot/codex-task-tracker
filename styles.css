@@ -301,8 +301,16 @@ h1 {
   background: var(--done-bg);
 }
 
-.task-title {
+.task-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px 16px;
   flex: 1;
+  min-width: 0;
+}
+
+.task-title {
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
@@ -310,6 +318,17 @@ h1 {
 .task-item.completed .task-title {
   color: var(--done-text);
   text-decoration: line-through;
+}
+
+.task-dates {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  text-align: right;
 }
 
 .toggle-task {
@@ -367,6 +386,17 @@ h1 {
 
   .task-item {
     align-items: flex-start;
+  }
+
+  .task-main {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .task-dates {
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
   }
 
   .dialog-actions {

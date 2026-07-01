@@ -27,6 +27,8 @@ form.addEventListener("submit", (event) => {
     id: createTaskId(),
     title,
     completed: false,
+    createdAt: createTaskTimestamp(),
+    completedAt: null,
   });
 
   input.value = "";
